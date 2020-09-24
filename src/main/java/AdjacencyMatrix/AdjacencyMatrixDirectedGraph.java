@@ -84,7 +84,9 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 	 */
 	@Override
 	public void removeArc(DirectedNode from, DirectedNode to) {
-		// A completer
+		if (this.isArc(from, to)) {
+			this.matrix[from.getLabel()][to.getLabel()] -= 1;
+		}
 	}
 
 	/**
@@ -145,6 +147,8 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 		}
 
 		System.out.println(am.isArc(new DirectedNode(2), new DirectedNode(0)));
+		System.out.println(am.isArc(new DirectedNode(0), new DirectedNode(3)));
+		am.removeArc(new DirectedNode(0), new DirectedNode(3));
 		System.out.println(am.isArc(new DirectedNode(0), new DirectedNode(3)));
 		// A completer
 	}
