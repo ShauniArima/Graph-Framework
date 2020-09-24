@@ -79,8 +79,11 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
     @Override
     public void removeEdge(UndirectedNode x, UndirectedNode y) {
         if(this.isEdge(x,y)){
-            this.getNodeOfList(x).getNeighbours().remove(this.getNodes().get(y.getLabel()));
-            this.getNodeOfList(y).getNeighbours().remove(this.getNodes().get(x.getLabel()));
+            UndirectedNode firstNode = this.getNodeOfList(x);
+            UndirectedNode secondNode = this.getNodeOfList(y);
+
+            firstNode.getNeighbours().remove(secondNode);
+            secondNode.getNeighbours().remove(firstNode);
         }
     }
 
