@@ -87,7 +87,11 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
     @Override
     public void addEdge(UndirectedNode x, UndirectedNode y) {
         if(!isEdge(x,y)){
-            // A completer
+            UndirectedNode firstNode = this.getNodeOfList(x);
+            UndirectedNode secondNode = this.getNodeOfList(y);
+
+            firstNode.getNeighbours().put(secondNode, 0);
+            secondNode.getNeighbours().put(firstNode, 0);
         }
     }
 
@@ -145,6 +149,9 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
         System.out.println(al.isEdge(new UndirectedNode(2), new UndirectedNode(1)));
 
         al.removeEdge(new UndirectedNode(2), new UndirectedNode(1));
+        System.out.println(al.isEdge(new UndirectedNode(2), new UndirectedNode(1)));
+
+        al.addEdge(new UndirectedNode(2), new UndirectedNode(1));
         System.out.println(al.isEdge(new UndirectedNode(2), new UndirectedNode(1)));
     }
 
