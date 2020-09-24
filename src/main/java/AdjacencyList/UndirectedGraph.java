@@ -78,8 +78,9 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
 
     @Override
     public void removeEdge(UndirectedNode x, UndirectedNode y) {
-        if(isEdge(x,y)){
-            // A completer
+        if(this.isEdge(x,y)){
+            this.getNodeOfList(x).getNeighbours().remove(this.getNodes().get(y.getLabel()));
+            this.getNodeOfList(y).getNeighbours().remove(this.getNodes().get(x.getLabel()));
         }
     }
 
@@ -140,8 +141,11 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
         GraphTools.afficherMatrix(mat);
         UndirectedGraph al = new UndirectedGraph(mat);
         System.out.println(al);
-        System.out.println(al.isEdge(new UndirectedNode(2), new UndirectedNode(1)));
         System.out.println(al.isEdge(new UndirectedNode(2), new UndirectedNode(0)));
+        System.out.println(al.isEdge(new UndirectedNode(2), new UndirectedNode(1)));
+
+        al.removeEdge(new UndirectedNode(2), new UndirectedNode(1));
+        System.out.println(al.isEdge(new UndirectedNode(2), new UndirectedNode(1)));
     }
 
 }
