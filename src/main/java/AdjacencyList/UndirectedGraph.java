@@ -1,6 +1,7 @@
 package AdjacencyList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import Abstraction.AbstractListGraph;
@@ -129,7 +130,16 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
     @Override
     public int[][] toAdjacencyMatrix() {
         int[][] matrix = new int[order][order];
-        // A completer
+
+        for (int x = 0; x < order; x++) {
+            this.getNodes().forEach(currentNode -> {
+                currentNode.getNeighbours().forEach((currentNeighbour, integer) -> {
+                    matrix[currentNode.getLabel()][currentNeighbour.getLabel()] = 1;
+                    matrix[currentNeighbour.getLabel()][currentNode.getLabel()] = 1;
+                });
+            });
+        }
+
         return matrix;
     }
 
@@ -160,6 +170,8 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
 
         al.addEdge(new UndirectedNode(2), new UndirectedNode(1));
         System.out.println(al.isEdge(new UndirectedNode(2), new UndirectedNode(1)));
+
+        System.out.println(Arrays.deepToString(al.toAdjacencyMatrix()));
     }
 
 }
