@@ -115,7 +115,6 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 				am.matrix[j][i] = tmp;
 			}
 		}
-		// A completer
 		return am;
 	}
 
@@ -152,6 +151,10 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 		System.out.println(am.isArc(new DirectedNode(0), new DirectedNode(3)));
 		am.addArc(new DirectedNode(0), new DirectedNode(3));
 		System.out.println(am.isArc(new DirectedNode(0), new DirectedNode(3)));
-		// A completer
+
+
+		System.out.println(am);
+
+		System.out.println(am.computeInverse());
 	}
 }
