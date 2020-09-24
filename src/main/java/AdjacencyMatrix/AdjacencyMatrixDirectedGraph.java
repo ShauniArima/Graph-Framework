@@ -76,8 +76,7 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 	
 	@Override
 	public boolean isArc(DirectedNode from, DirectedNode to) {
-		// A completer
-		return true;
+		return this.getSuccessors(from).contains(to.getLabel());
 	}
 
 	/**
@@ -144,6 +143,9 @@ public class AdjacencyMatrixDirectedGraph extends AbstractMatrixGraph<DirectedNo
 		for (Integer integer : t2) {
 			System.out.print(integer + ", ");
 		}
+
+		System.out.println(am.isArc(new DirectedNode(2), new DirectedNode(0)));
+		System.out.println(am.isArc(new DirectedNode(0), new DirectedNode(3)));
 		// A completer
 	}
 }
