@@ -67,8 +67,7 @@ public class AdjacencyMatrixUndirectedGraph extends AbstractMatrixGraph<Undirect
 	
 	@Override
 	public boolean isEdge(UndirectedNode x, UndirectedNode y) {
-		// A completer
-		return true;		
+		return this.matrix[x.getLabel()][y.getLabel()] != 0 && this.matrix[y.getLabel()][x.getLabel()] != 0;
 	}
 	
 	/**
@@ -118,7 +117,7 @@ public class AdjacencyMatrixUndirectedGraph extends AbstractMatrixGraph<Undirect
 		for (Integer integer : t2) {
 			System.out.print(integer + ", ");
 		}
-		am.isEdge(new UndirectedNode(2), new UndirectedNode(5));
+		System.out.println(am.isEdge(new UndirectedNode(2), new UndirectedNode(5)));
 		for(int i = 0; i<3;i++)
 			am.addEdge(new UndirectedNode(2), new UndirectedNode(5));
 		System.out.println(am);
