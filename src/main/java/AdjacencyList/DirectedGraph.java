@@ -88,7 +88,15 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
 
     @Override
     public void addArc(DirectedNode from, DirectedNode to) {
-        // A completer
+        if (this.isArc(from, to)) {
+            return;
+        }
+
+        DirectedNode source = this.getNodeOfList(from);
+        DirectedNode target = this.getNodeOfList(to);
+
+        source.addSucc(target, 0);
+        target.addPred(source, 0);
     }
 
     //--------------------------------------------------
@@ -154,10 +162,13 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         DirectedGraph al = new DirectedGraph(Matrix);
         System.out.println(al);
 
-        System.out.println(al.isArc(new DirectedNode(0), new DirectedNode(3)));
-        System.out.println(al.isArc(new DirectedNode(0), new DirectedNode(1)));
+        System.out.println("0 -> 1: " + al.isArc(new DirectedNode(0), new DirectedNode(1)));
+        System.out.println("0 -> 3: " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
 
         al.removeArc(new DirectedNode(0), new DirectedNode(3));
-        System.out.println(al.isArc(new DirectedNode(0), new DirectedNode(3)));
+        System.out.println("0 -> 3: " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
+
+        al.addArc(new DirectedNode(0), new DirectedNode(3));
+        System.out.println("0 -> 3: " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
     }
 }
