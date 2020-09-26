@@ -2,6 +2,7 @@ package AdjacencyMatrix;
 
 import GraphAlgorithms.GraphTools;
 import Nodes.AbstractNode;
+import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 
 public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirectedGraph {
@@ -56,7 +57,11 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
 	@Override
 	public void removeEdge(UndirectedNode x, UndirectedNode y) {
 		super.removeEdge(x, y);
-		// A completer
+
+		if (!this.isEdge(x, y)) {
+			this.matrixCosts[x.getLabel()][y.getLabel()] = 0;
+			this.matrixCosts[y.getLabel()][x.getLabel()] = 0;
+		}
 	}
 
 	/**
@@ -86,7 +91,9 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
 		GraphTools.afficherMatrix(matrix);
 		AdjacencyMatrixUndirectedValuedGraph am = new AdjacencyMatrixUndirectedValuedGraph(matrix, matrixValued);
 		System.out.println(am);
-		// A completer
+
+		am.removeEdge(new UndirectedNode(1), new UndirectedNode(7));
+		System.out.println(am);
 	}
 
 }
