@@ -1,25 +1,27 @@
 package AdjacencyList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import Abstraction.AbstractListGraph;
+import AdjacencyMatrix.AdjacencyMatrixDirectedGraph;
 import GraphAlgorithms.GraphTools;
 import Nodes.DirectedNode;
 import Abstraction.IDirectedGraph;
 
 public class DirectedGraph extends AbstractListGraph<DirectedNode> implements IDirectedGraph {
 
-	private static int _DEBBUG =0;
-		
+    private static int _DEBBUG =0;
+
     //--------------------------------------------------
     // 				Constructors
     //--------------------------------------------------
 
-	public DirectedGraph(){
-		super();
-		this.nodes = new ArrayList<DirectedNode>();
-	}
+    public DirectedGraph(){
+        super();
+        this.nodes = new ArrayList<DirectedNode>();
+    }
 
     public DirectedGraph(int[][] matrix) {
         this.order = matrix.length;
@@ -29,7 +31,7 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         }
         for (DirectedNode n : this.getNodes()) {
             for (int j = 0; j < matrix[n.getLabel()].length; j++) {
-            	DirectedNode nn = this.getNodes().get(j);
+                DirectedNode nn = this.getNodes().get(j);
                 if (matrix[n.getLabel()][j] != 0) {
                     n.getSuccs().put(nn,0);
                     nn.getPreds().put(n,0);
@@ -48,7 +50,7 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
             this.nodes.add(makeNode(n.getLabel()));
         }
         for (DirectedNode n : g.getNodes()) {
-        	DirectedNode nn = this.getNodes().get(n.getLabel());
+            DirectedNode nn = this.getNodes().get(n.getLabel());
             for (DirectedNode sn : n.getSuccs().keySet()) {
                 DirectedNode snn = this.getNodes().get(sn.getLabel());
                 nn.getSuccs().put(snn,0);
@@ -69,18 +71,34 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
 
     @Override
     public boolean isArc(DirectedNode from, DirectedNode to) {
-    	// A completer
-    	return false;
+        DirectedNode source = this.getNodeOfList(from);
+        DirectedNode target = this.getNodeOfList(to);
+
+        return source.getSuccs().containsKey(target) && target.getPreds().containsKey(source);
     }
 
     @Override
     public void removeArc(DirectedNode from, DirectedNode to) {
-    	// A completer
+        if (this.isArc(from, to)) {
+            DirectedNode source = this.getNodeOfList(from);
+            DirectedNode target = this.getNodeOfList(to);
+
+            source.getSuccs().remove(target);
+            target.getPreds().remove(source);
+        }
     }
 
     @Override
     public void addArc(DirectedNode from, DirectedNode to) {
-    	// A completer
+        if (this.isArc(from, to)) {
+            return;
+        }
+
+        DirectedNode source = this.getNodeOfList(from);
+        DirectedNode target = this.getNodeOfList(to);
+
+        source.addSucc(target, 0);
+        target.addPred(source, 0);
     }
 
     //--------------------------------------------------
@@ -121,11 +139,15 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
 
     @Override
     public IDirectedGraph computeInverse() {
-        DirectedGraph g = new DirectedGraph(this);
-        // A completer
+        AdjacencyMatrixDirectedGraph adjacencyMatrixDirectedGraph = new AdjacencyMatrixDirectedGraph(this.toAdjacencyMatrix());
+
+        IDirectedGraph invertedMatrix = adjacencyMatrixDirectedGraph.computeInverse();
+
+        DirectedGraph g = new DirectedGraph(invertedMatrix.toAdjacencyMatrix());
+
         return g;
     }
-    
+
     @Override
     public String toString(){
         StringBuilder s = new StringBuilder();
@@ -145,6 +167,18 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         GraphTools.afficherMatrix(Matrix);
         DirectedGraph al = new DirectedGraph(Matrix);
         System.out.println(al);
-        // A completer
+
+        System.out.println("0 -> 1: " + al.isArc(new DirectedNode(0), new DirectedNode(1)));
+        System.out.println("0 -> 3: " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
+
+        al.removeArc(new DirectedNode(0), new DirectedNode(3));
+        System.out.println("0 -> 3: " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
+
+        al.addArc(new DirectedNode(0), new DirectedNode(3));
+        System.out.println("0 -> 3: " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
+
+        System.out.println(Arrays.deepToString(al.toAdjacencyMatrix()));
+
+        System.out.println(al.computeInverse());
     }
 }
