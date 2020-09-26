@@ -1,6 +1,7 @@
 package AdjacencyList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import Abstraction.AbstractListGraph;
@@ -170,5 +171,7 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
 
         al.addArc(new DirectedNode(0), new DirectedNode(3));
         System.out.println("0 -> 3: " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
+
+        System.out.println(Arrays.deepToString(al.toAdjacencyMatrix()));
     }
 }
