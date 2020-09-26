@@ -64,7 +64,10 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
      */
 	public void addArc(DirectedNode from, DirectedNode to, int cost ) {
 		super.addArc(from,to);
-		// A completer
+
+		if (this.matrixCosts[from.getLabel()][to.getLabel()] == 0) {
+			this.matrixCosts[from.getLabel()][to.getLabel()] = cost;
+		}
 	}
 	
 	public String toString() {
@@ -86,6 +89,10 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
 		System.out.println(am);
 
 		am.removeArc(new DirectedNode(2), new DirectedNode(0));
+		System.out.println(am);
+
+		am.addArc(new DirectedNode(2), new DirectedNode(0), 6);
+		am.addArc(new DirectedNode(0), new DirectedNode(2), 6);
 		System.out.println(am);
 	}
 }
