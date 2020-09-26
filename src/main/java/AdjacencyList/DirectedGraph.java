@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import Abstraction.AbstractListGraph;
+import AdjacencyMatrix.AdjacencyMatrixDirectedGraph;
 import GraphAlgorithms.GraphTools;
 import Nodes.DirectedNode;
 import Abstraction.IDirectedGraph;
@@ -138,8 +139,12 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
 
     @Override
     public IDirectedGraph computeInverse() {
-        DirectedGraph g = new DirectedGraph(this);
-        // A completer
+        AdjacencyMatrixDirectedGraph adjacencyMatrixDirectedGraph = new AdjacencyMatrixDirectedGraph(this.toAdjacencyMatrix());
+
+        IDirectedGraph invertedMatrix = adjacencyMatrixDirectedGraph.computeInverse();
+
+        DirectedGraph g = new DirectedGraph(invertedMatrix.toAdjacencyMatrix());
+
         return g;
     }
 
@@ -173,5 +178,7 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         System.out.println("0 -> 3: " + al.isArc(new DirectedNode(0), new DirectedNode(3)));
 
         System.out.println(Arrays.deepToString(al.toAdjacencyMatrix()));
+
+        System.out.println(al.computeInverse());
     }
 }
