@@ -3,6 +3,7 @@ package AdjacencyList;
 import java.util.ArrayList;
 
 import GraphAlgorithms.GraphTools;
+import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 
 public class UndirectedValuedGraph extends UndirectedGraph{
@@ -39,7 +40,15 @@ public class UndirectedValuedGraph extends UndirectedGraph{
      * Adds the edge (from,to) with cost if it is not already present in the graph
      */
     public void addEdge(UndirectedNode x, UndirectedNode y, int cost) {
-    	// A completer
+        if(isEdge(x,y)){
+            return;
+        }
+
+        UndirectedNode firstNode = this.getNodeOfList(x);
+        UndirectedNode secondNode = this.getNodeOfList(y);
+
+        firstNode.getNeighbours().put(secondNode, cost);
+        secondNode.getNeighbours().put(firstNode, cost);
     }
     
     @Override
@@ -63,6 +72,8 @@ public class UndirectedValuedGraph extends UndirectedGraph{
         GraphTools.afficherMatrix(matrixValued);
         UndirectedValuedGraph al = new UndirectedValuedGraph(matrixValued);
         System.out.println(al);
-        // A completer
+
+        al.addEdge(new UndirectedNode(0), new UndirectedNode(1), 200);
+        System.out.println(al);
     }
 }
