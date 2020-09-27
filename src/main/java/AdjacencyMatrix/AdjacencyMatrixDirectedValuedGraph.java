@@ -24,9 +24,9 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
 		for(int i =0;i<this.order;i++){
 			for(int j=0;j<this.order;j++){
 				int val = mat[i][j];
-				int cost = matrixVal[i][j]; 
+				int cost = matrixVal[i][j];
 				this.matrix[i][j] = val;				
-				this.matrixCosts[i][j] = cost; 
+				this.matrixCosts[i][j] = cost;
 				this.m += val;					
 			}
 		}
@@ -53,7 +53,10 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
 	@Override
 	public void removeArc(DirectedNode from, DirectedNode to) {
 		super.removeArc(from, to);
-		// A completer
+
+		if (!this.isArc(from, to)) {
+			this.matrixCosts[from.getLabel()][to.getLabel()] = 0;
+		}
 	}
 
 	/**
@@ -61,7 +64,10 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
      */
 	public void addArc(DirectedNode from, DirectedNode to, int cost ) {
 		super.addArc(from,to);
-		// A completer
+
+		if (this.matrixCosts[from.getLabel()][to.getLabel()] == 0) {
+			this.matrixCosts[from.getLabel()][to.getLabel()] = cost;
+		}
 	}
 	
 	public String toString() {
@@ -81,6 +87,12 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
         int[][] matrixValued = GraphTools.generateValuedGraphData(10, false, false, true, false, 100001);
 		AdjacencyMatrixDirectedValuedGraph am = new AdjacencyMatrixDirectedValuedGraph(matrix, matrixValued);
 		System.out.println(am);
-		// A completer
+
+		am.removeArc(new DirectedNode(2), new DirectedNode(0));
+		System.out.println(am);
+
+		am.addArc(new DirectedNode(2), new DirectedNode(0), 6);
+		am.addArc(new DirectedNode(0), new DirectedNode(2), 6);
+		System.out.println(am);
 	}
 }
