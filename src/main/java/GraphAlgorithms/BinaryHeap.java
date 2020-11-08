@@ -28,7 +28,16 @@ public class BinaryHeap {
     }
 
     public void insert(int element) {
-    	// A completer
+        int i = this.pos;
+        this.nodes[i] = element;
+        
+        int parentPos;
+        while ((parentPos = this.getParentPos(i)) >= 0 && this.nodes[parentPos] > element) {
+            this.swap(parentPos, i);
+            i = parentPos;
+        }
+
+        this.pos++;
     }
 
     public int remove() {
@@ -45,6 +54,9 @@ public class BinaryHeap {
         }
     }
 
+    private int getParentPos(int elementIndex) {
+        return (elementIndex - 1) / 2;
+    }
     
     /**
 	 * Test if the node is a leaf in the binary heap
@@ -110,7 +122,7 @@ public class BinaryHeap {
         }
      // A completer
         System.out.println("\n" + jarjarBin);
-        System.out.println(jarjarBin.test());
+        // System.out.println(jarjarBin.test());
     }
 
 }
