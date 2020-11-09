@@ -27,7 +27,16 @@ public class BinaryHeap {
         return pos == 0;
     }
 
+    /**
+     * insert an new element in the heap
+     * 
+     * @param element the element to insert
+     */
     public void insert(int element) {
+        if (this.pos >= this.nodes.length) {
+            this.resize();
+        }
+
         int i = this.pos;
         this.nodes[i] = element;
         
@@ -40,20 +49,61 @@ public class BinaryHeap {
         this.pos++;
     }
 
+    /**
+     * remove the root element of the heap and return the new size of the heap
+     * 
+     * @return the updated size of the heap
+     */
     public int remove() {
-    	// A completer
-    	return 0;
+        int i = 0;
+        this.swap(i, this.pos - 1);
+
+        this.nodes[this.pos - 1] = Integer.MAX_VALUE;
+
+        int bestChild;
+        while ((bestChild = this.getBestChildPos(i)) != Integer.MAX_VALUE) {
+            swap(i, bestChild);
+            i = bestChild;
+        }
+
+    	return this.pos--;
     }
 
+    /**
+     * getBestChildPos compute the position of the lowest child of the given
+     * source
+     * 
+     * @param src the parent position to explore
+     * 
+     * @return the position of the lowest child return Integer.MAX_VALUE if
+     * the given source is a leaf
+     */
     private int getBestChildPos(int src) {
         if (isLeaf(src)) { // the leaf is a stopping case, then we return a default value
             return Integer.MAX_VALUE;
-        } else {
-        	// A completer
-        	return Integer.MAX_VALUE;
+        } 
+        
+        int leftPos = 2 * src + 1;
+        int rightPos = 2 * src + 2;
+
+        
+        if (rightPos >= this.pos) {
+            return leftPos;
         }
+        
+        int left = this.nodes[leftPos];
+        int right = this.nodes[rightPos];
+
+        return left < right ? leftPos : rightPos;
     }
 
+    /**
+     * getParentPos compute the parent's position of the hiven index
+     * 
+     * @param elementIndex the index used to compute the parent position
+     * 
+     * @return the position of the parent
+     */
     private int getParentPos(int elementIndex) {
         return (elementIndex - 1) / 2;
     }
@@ -65,10 +115,15 @@ public class BinaryHeap {
 	 * 
 	 */	
     private boolean isLeaf(int src) {
-    	// A completer
-    	return false;
+    	return 2 * src + 1 >= this.pos;
     }
 
+    /**
+     * swap two elements in the heap
+     * 
+     * @param father the father's index
+     * @param child the child's index
+     */
     private void swap(int father, int child) {
         int temp = nodes[father];
         nodes[father] = nodes[child];
@@ -122,7 +177,11 @@ public class BinaryHeap {
         }
      // A completer
         System.out.println("\n" + jarjarBin);
-        // System.out.println(jarjarBin.test());
+        jarjarBin.insert(0);
+        System.out.println("\n" + jarjarBin);
+        jarjarBin.remove();
+        System.out.println("\n" + jarjarBin);
+        System.out.println(jarjarBin.test());
     }
 
 }
