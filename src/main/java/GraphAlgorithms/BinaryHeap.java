@@ -1,6 +1,5 @@
 package GraphAlgorithms;
 
-
 public class BinaryHeap {
 
     private int[] nodes;
@@ -39,7 +38,7 @@ public class BinaryHeap {
 
         int i = this.pos;
         this.nodes[i] = element;
-        
+
         int parentPos;
         while ((parentPos = this.getParentPos(i)) >= 0 && this.nodes[parentPos] > element) {
             this.swap(parentPos, i);
@@ -66,31 +65,29 @@ public class BinaryHeap {
             i = bestChild;
         }
 
-    	return this.pos--;
+        return this.pos--;
     }
 
     /**
-     * getBestChildPos compute the position of the lowest child of the given
-     * source
+     * getBestChildPos compute the position of the lowest child of the given source
      * 
      * @param src the parent position to explore
      * 
-     * @return the position of the lowest child return Integer.MAX_VALUE if
-     * the given source is a leaf
+     * @return the position of the lowest child return Integer.MAX_VALUE if the
+     *         given source is a leaf
      */
     private int getBestChildPos(int src) {
         if (isLeaf(src)) { // the leaf is a stopping case, then we return a default value
             return Integer.MAX_VALUE;
-        } 
-        
+        }
+
         int leftPos = 2 * src + 1;
         int rightPos = 2 * src + 2;
 
-        
         if (rightPos >= this.pos) {
             return leftPos;
         }
-        
+
         int left = this.nodes[leftPos];
         int right = this.nodes[rightPos];
 
@@ -107,22 +104,22 @@ public class BinaryHeap {
     private int getParentPos(int elementIndex) {
         return (elementIndex - 1) / 2;
     }
-    
+
     /**
-	 * Test if the node is a leaf in the binary heap
-	 * 
-	 * @returns true if it's a leaf or false else
-	 * 
-	 */	
+     * Test if the node is a leaf in the binary heap
+     * 
+     * @returns true if it's a leaf or false else
+     * 
+     */
     private boolean isLeaf(int src) {
-    	return 2 * src + 1 >= this.pos;
+        return 2 * src + 1 >= this.pos;
     }
 
     /**
      * swap two elements in the heap
      * 
      * @param father the father's index
-     * @param child the child's index
+     * @param child  the child's index
      */
     private void swap(int father, int child) {
         int temp = nodes[father];
@@ -139,11 +136,12 @@ public class BinaryHeap {
     }
 
     /**
-	 * Recursive test to check the validity of the binary heap
-	 * 
-	 * @returns a boolean equal to True if the binary tree is compact from left to right
-	 * 
-	 */
+     * Recursive test to check the validity of the binary heap
+     * 
+     * @returns a boolean equal to True if the binary tree is compact from left to
+     *          right
+     * 
+     */
     public boolean test() {
         return this.isEmpty() || testRec(0);
     }
@@ -164,7 +162,7 @@ public class BinaryHeap {
 
     public static void main(String[] args) {
         BinaryHeap jarjarBin = new BinaryHeap();
-        System.out.println(jarjarBin.isEmpty()+"\n");
+        System.out.println(jarjarBin.isEmpty() + "\n");
         int k = 20;
         int m = k;
         int min = 2;
@@ -172,10 +170,10 @@ public class BinaryHeap {
         while (k > 0) {
             int rand = min + (int) (Math.random() * ((max - min) + 1));
             System.out.print("insert " + rand);
-            jarjarBin.insert(rand);            
+            jarjarBin.insert(rand);
             k--;
         }
-     // A completer
+        // A completer
         System.out.println("\n" + jarjarBin);
         jarjarBin.insert(0);
         System.out.println("\n" + jarjarBin);
