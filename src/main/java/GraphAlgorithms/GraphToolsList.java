@@ -2,6 +2,7 @@ package GraphAlgorithms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.IntStream;
 
@@ -89,6 +90,44 @@ public class GraphToolsList  extends GraphTools {
 		System.out.println("Final marks: " + marks);
 	}
 
+	/**
+	 * dethFirstSearch traverses the graph and displays what he is doing
+	 * 
+	 * @param graph the graph that will be traversed
+	 * @param start the node from where to start
+	 */
+	public static void depthFirstSearch(IGraph graph, AbstractNode start) {
+		List<Boolean> marks = initMarks(graph, start);
+
+		Stack<AbstractNode> toVisit = new Stack<>();
+		toVisit.add(start);
+
+		while (!toVisit.isEmpty()) {
+			AbstractNode currentNode = toVisit.pop();
+			System.out.println("Visiting: " + currentNode);
+
+			ArrayList<AbstractNode> neighbours = new ArrayList<>();
+
+			// This part can be simplified by using the same method for undirected and directed nodes
+			if (currentNode.getClass() == UndirectedNode.class) {
+				((UndirectedNode) currentNode).getNeighbours().keySet().forEach(neighbours::add);
+			}
+
+			if (currentNode.getClass() == DirectedNode.class) {
+				((DirectedNode) currentNode).getSuccs().keySet().forEach(neighbours::add);
+			}
+
+			for (AbstractNode neighbour : neighbours) {
+				if (!marks.get(neighbour.getLabel())) {
+					marks.set(neighbour.getLabel(), true);
+					toVisit.push(neighbour);
+				}
+			}
+		}
+
+		System.out.println("Final marks: " + marks);
+	}
+
 	// A completer
 
 
@@ -99,6 +138,10 @@ public class GraphToolsList  extends GraphTools {
 		System.out.println(al);
 
 		// A completer
+		System.out.println("BFS Traversal");
 		breathFirstSearch(al, al.getNodes().get(0));
+
+		System.out.println("\nDFS Traversal");
+		depthFirstSearch(al, al.getNodes().get(0));
 	}
 }
