@@ -1,16 +1,13 @@
 package GraphAlgorithms;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.IntStream;
 
+import Abstraction.IGraph;
 import AdjacencyList.DirectedGraph;
-import AdjacencyList.DirectedValuedGraph;
-import AdjacencyList.UndirectedValuedGraph;
-import Collection.Triple;
+import Nodes.AbstractNode;
 import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 
@@ -42,6 +39,56 @@ public class GraphToolsList  extends GraphTools {
 	// 				Methods
 	// ------------------------------------------
 
+	public static List<Boolean> initMarks(IGraph graph, AbstractNode start) {
+		int nodeCount = graph.getNbNodes();
+
+		ArrayList<Boolean> marks = new ArrayList<>();
+		IntStream.range(0, nodeCount)
+			.forEach(i -> marks.add(false));
+		
+		marks.set(start.getLabel(), true);
+
+		return marks;
+	}
+
+	/**
+	 * breathFirstSearch traverses the graph and displays what he is doing
+	 * 
+	 * @param graph the graph that will be traversed
+	 * @param start the node from where to start
+	 */
+	public static void breathFirstSearch(IGraph graph, AbstractNode start) {
+		List<Boolean> marks = initMarks(graph, start);
+
+		ConcurrentLinkedQueue<AbstractNode> toVisit = new ConcurrentLinkedQueue<>();
+		toVisit.add(start);
+
+		AbstractNode currentNode;
+		while ((currentNode = toVisit.poll()) != null) {
+			System.out.println("Visiting: " + currentNode);
+
+			ArrayList<AbstractNode> neighbours = new ArrayList<>();
+
+			// This part can be simplified by using the same method for undirected and directed nodes
+			if (currentNode.getClass() == UndirectedNode.class) {
+				((UndirectedNode) currentNode).getNeighbours().keySet().forEach(neighbours::add);
+			}
+
+			if (currentNode.getClass() == DirectedNode.class) {
+				((DirectedNode) currentNode).getSuccs().keySet().forEach(neighbours::add);
+			}
+
+			for (AbstractNode neighbour : neighbours) {
+				if (!marks.get(neighbour.getLabel())) {
+					marks.set(neighbour.getLabel(), true);
+					toVisit.add(neighbour);
+				}
+			}
+		}
+
+		System.out.println("Final marks: " + marks);
+	}
+
 	// A completer
 
 
@@ -52,5 +99,6 @@ public class GraphToolsList  extends GraphTools {
 		System.out.println(al);
 
 		// A completer
+		breathFirstSearch(al, al.getNodes().get(0));
 	}
 }

@@ -173,7 +173,6 @@ public class BinaryHeap {
             jarjarBin.insert(rand);
             k--;
         }
-        // A completer
         System.out.println("\n" + jarjarBin);
         jarjarBin.insert(0);
         System.out.println("\n" + jarjarBin);
