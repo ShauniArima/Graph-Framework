@@ -1,13 +1,22 @@
 package GraphAlgorithms;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
+import Abstraction.AbstractListGraph;
 import Abstraction.IGraph;
 import AdjacencyList.DirectedGraph;
+import AdjacencyList.DirectedValuedGraph;
+import AdjacencyList.UndirectedGraph;
+import AdjacencyList.UndirectedValuedGraph;
 import Nodes.AbstractNode;
 import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
@@ -128,6 +137,86 @@ public class GraphToolsList  extends GraphTools {
 		System.out.println("Final marks: " + marks);
 	}
 
+
+	/**
+	 * exploreVertex allows to explore a vertex and his neighbours 
+	 * 
+	 * @param vertex vertex to visit
+	 * @param visited set of already visited nodes
+	 * @param visiteState represent the current state of the exploration
+	 * @param start	a list of integers that represents the turn when the exploration of node x started 
+	 * @param end a list of integers that represents the turn when the exploration of node x ended
+	 * @param turnCount the count of turns
+	 */
+	public static void exploreVertex(AbstractNode vertex, Set<AbstractNode> visited, List<Integer> visiteState,
+			List<Integer> start, List<Integer> end, AtomicInteger turnCount) {
+		visited.add(vertex);
+		visiteState.set(vertex.getLabel(), 1);
+		start.set(vertex.getLabel(), turnCount.get());
+		turnCount.incrementAndGet();
+
+		BiConsumer<AbstractNode, Integer> action = (successor, value) -> {
+			if (!visited.contains(successor)) {
+				exploreVertex(successor, visited, visiteState, start, end, turnCount);
+			}
+		};
+
+		if (vertex.getClass() == DirectedNode.class) {
+			((DirectedNode) vertex).getSuccs().forEach(action);
+		}
+
+		if (vertex.getClass() == UndirectedNode.class) {
+			((UndirectedNode) vertex).getNeighbours().forEach(action);
+		}
+
+		visiteState.set(vertex.getLabel(), 2);
+		end.set(vertex.getLabel(), turnCount.get());
+		turnCount.incrementAndGet();
+	}
+
+	/**
+	 * exploreGraph allows to explore a graph and keep a state of the exploration
+	 * 
+	 * @param graph the graph to explore
+	 */
+	public static List<Integer> exploreGraph(IGraph graph) {
+		Set<AbstractNode> visited = new HashSet<>();
+		List<Integer> visiteState = new ArrayList<>();
+		List<Integer> start = new ArrayList<>();
+		List<Integer> end = new ArrayList<>();
+		AtomicInteger turnCount = new AtomicInteger(0);
+
+		IntStream.range(0, graph.getNbNodes()).forEach(i -> {
+			visiteState.add(0);
+			start.add(0);
+			end.add(0);
+		});
+
+		Consumer<AbstractNode> action = vertex -> {
+			if (!visited.contains(vertex)) {
+				System.out.println("Exploring: " + vertex);
+				exploreVertex(vertex, visited, visiteState, start, end, turnCount);
+			}
+		};
+
+		if (graph.getClass() == DirectedGraph.class) {
+			((DirectedGraph) graph).getNodes().forEach(action);
+		}
+		if (graph.getClass() == UndirectedGraph.class) {
+			((UndirectedGraph) graph).getNodes().forEach(action);
+		}
+		if (graph.getClass() == DirectedValuedGraph.class) {
+			((DirectedValuedGraph) graph).getNodes().forEach(action);
+		}
+		if (graph.getClass() == UndirectedValuedGraph.class) {
+			((UndirectedValuedGraph) graph).getNodes().forEach(action);
+		}
+
+		System.out.println("Start: " + start);
+		System.out.println("End: " + end);
+
+		return end;
+	}
 	// A completer
 
 
@@ -143,5 +232,8 @@ public class GraphToolsList  extends GraphTools {
 
 		System.out.println("\nDFS Traversal");
 		depthFirstSearch(al, al.getNodes().get(0));
+
+		System.out.println("\nExplore graph");
+		exploreGraph(al);
 	}
 }
