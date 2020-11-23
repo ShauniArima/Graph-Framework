@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import Abstraction.AbstractListGraph;
@@ -17,6 +19,7 @@ import AdjacencyList.DirectedGraph;
 import AdjacencyList.DirectedValuedGraph;
 import AdjacencyList.UndirectedGraph;
 import AdjacencyList.UndirectedValuedGraph;
+import Collection.Pair;
 import Nodes.AbstractNode;
 import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
@@ -217,6 +220,60 @@ public class GraphToolsList  extends GraphTools {
 
 		return end;
 	}
+
+	/**
+	 * exploreGraphOrdered allows to explore a graph in a given order and keep
+	 * a state of the exploration
+	 * 
+	 * @param graph the graph to explore
+	 * @param order the order used for the exploration
+	 */
+	public static List<Integer> exploreGraphOrdered(IGraph graph, List<Integer> order) {
+		Set<AbstractNode> visited = new HashSet<>();
+		List<Integer> visiteState = new ArrayList<>();
+		List<Integer> start = new ArrayList<>();
+		List<Integer> end = new ArrayList<>();
+		AtomicInteger turnCount = new AtomicInteger(0);
+
+		IntStream.range(0, graph.getNbNodes()).forEach(i -> {
+			visiteState.add(0);
+			start.add(0);
+			end.add(0);
+		});
+
+		Consumer<AbstractNode> action = vertex -> {
+			if (!visited.contains(vertex)) {
+				System.out.println("Exploring: " + vertex);
+				exploreVertex(vertex, visited, visiteState, start, end, turnCount);
+			}
+		};
+
+		if (graph.getClass() == DirectedGraph.class) {
+			order.forEach(i -> {
+				action.accept(((DirectedGraph) graph).getNodes().get(i));
+			});
+		}
+		if (graph.getClass() == UndirectedGraph.class) {
+			order.forEach(i -> {
+				action.accept(((UndirectedGraph) graph).getNodes().get(i));
+			});
+		}
+		if (graph.getClass() == DirectedValuedGraph.class) {
+			order.forEach(i -> {
+				action.accept(((DirectedValuedGraph) graph).getNodes().get(i));
+			});
+		}
+		if (graph.getClass() == UndirectedValuedGraph.class) {
+			order.forEach(i -> {
+				action.accept(((UndirectedValuedGraph) graph).getNodes().get(i));
+			});
+		}
+
+		System.out.println("Start: " + start);
+		System.out.println("End: " + end);
+
+		return end;
+	}
 	// A completer
 
 
@@ -232,8 +289,33 @@ public class GraphToolsList  extends GraphTools {
 
 		System.out.println("\nDFS Traversal");
 		depthFirstSearch(al, al.getNodes().get(0));
-
+		
 		System.out.println("\nExplore graph");
-		exploreGraph(al);
+		long start = System.nanoTime();
+		List<Integer> endState = exploreGraph(al);
+		long end = System.nanoTime();
+		long explorationDuration = end - start;
+		System.out.println("Elapsed: " + explorationDuration + " nanoseconds");
+
+		System.out.println("\nExplore inversed graph");
+		IGraph inversedGraph = al.computeInverse();
+		List<Integer> order = IntStream.range(0, endState.size())
+			.mapToObj(index -> new Pair<Integer, Integer>(endState.get(index), index))
+			.sorted((p1, p2) -> Integer.compare(p2.getLeft(), p1.getLeft()))
+			.map(Pair::getRight)
+			.collect(Collectors.toList());
+		start = System.nanoTime();
+		exploreGraphOrdered(inversedGraph, order);
+		end = System.nanoTime();
+		long explorationInversedDuration = end - start;
+		System.out.println("Elapsed: " + explorationInversedDuration + " nanoseconds");
+
+		if (explorationDuration < explorationInversedDuration) {
+			System.out.println("\nNormal exploration is the fastest");
+		}
+
+		if (explorationDuration > explorationInversedDuration) {
+			System.out.println("\nInversed exploration is the fastest");
+		}
 	}
 }
