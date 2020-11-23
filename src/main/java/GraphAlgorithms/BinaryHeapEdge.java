@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Collection.Triple;
-import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 
 public class BinaryHeapEdge {
@@ -13,7 +12,7 @@ public class BinaryHeapEdge {
 	 * A list structure for a faster management of the heap by indexing
 	 * 
 	 */
-	private  List<Triple<UndirectedNode,UndirectedNode,Integer>> binh;
+	private List<Triple<UndirectedNode,UndirectedNode,Integer>> binh;
 
     public BinaryHeapEdge() {
         this.binh = new ArrayList<>();
@@ -31,7 +30,16 @@ public class BinaryHeapEdge {
 	 * @param val the edge weight
 	 */
     public void insert(UndirectedNode from, UndirectedNode to, int val) {
-    	// To complete
+		Triple<UndirectedNode, UndirectedNode, Integer> element = new Triple<>(from, to, val);
+		int i = this.binh.size();
+		this.binh.add(i, element);
+
+        int parentPos;
+        while ((parentPos = this.getParentPos(i)) >= 0 && this.binh.get(parentPos).getThird() > element.getThird()) {
+            this.swap(parentPos, i);
+			i = parentPos;
+			element = this.binh.get(i);
+        }
     }
 
     
@@ -42,9 +50,20 @@ public class BinaryHeapEdge {
 	 * 
 	 */
     public Triple<UndirectedNode,UndirectedNode,Integer> remove() {
-    	// To complete
-    	return null;
-        
+		int lastIndex = binh.size() - 1;
+		int i = 0;
+        this.swap(i, lastIndex);
+
+        this.binh.get(lastIndex).setThird(Integer.MAX_VALUE);
+		
+        int bestChild;
+        while ((bestChild = this.getBestChildPos(i)) != Integer.MAX_VALUE && this.binh.get(bestChild).getThird() < this.binh.get(i).getThird()) {
+			swap(i, bestChild);
+            i = bestChild;
+        }
+		
+		this.binh.remove(lastIndex);
+        return this.binh.get(0);
     }
     
 
@@ -58,15 +77,35 @@ public class BinaryHeapEdge {
     	int lastIndex = binh.size()-1; 
         if (isLeaf(src)) { // the leaf is a stopping case, then we return a default value
             return Integer.MAX_VALUE;
-        } else {
-        	// To complete
-        	return Integer.MAX_VALUE;
+		}
+		
+		int leftPos = 2 * src + 1;
+        int rightPos = 2 * src + 2;
+
+        if (rightPos >= lastIndex) {
+            return leftPos;
         }
+
+        int left = this.binh.get(leftPos).getThird();
+        int right = this.binh.get(rightPos).getThird();
+
+        return left < right ? leftPos : rightPos;
+	}
+	
+	/**
+     * getParentPos compute the parent's position of the hiven index
+     * 
+     * @param elementIndex the index used to compute the parent position
+     * 
+     * @return the position of the parent
+     */
+    private int getParentPos(int elementIndex) {
+        return (elementIndex - 1) / 2;
     }
 
+
     private boolean isLeaf(int src) {
-    	// A completer
-    	return false;
+    	return 2 * src + 1 >= this.binh.size();
     }
 
     
@@ -173,7 +212,15 @@ public class BinaryHeapEdge {
         }
         // A completer
         
-        System.out.println(jarjarBin.test());
+		System.out.println(jarjarBin.test());
+		jarjarBin.lovelyPrinting();
+
+		jarjarBin.insert(new UndirectedNode(10), new UndirectedNode(40), 0);
+		jarjarBin.lovelyPrinting();
+		
+		jarjarBin.remove();
+		jarjarBin.lovelyPrinting();
+
     }
 
 }

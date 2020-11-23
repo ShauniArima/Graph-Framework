@@ -60,7 +60,7 @@ public class BinaryHeap {
         this.nodes[this.pos - 1] = Integer.MAX_VALUE;
 
         int bestChild;
-        while ((bestChild = this.getBestChildPos(i)) != Integer.MAX_VALUE) {
+        while ((bestChild = this.getBestChildPos(i)) != Integer.MAX_VALUE && this.nodes[bestChild] < this.nodes[i]) {
             swap(i, bestChild);
             i = bestChild;
         }

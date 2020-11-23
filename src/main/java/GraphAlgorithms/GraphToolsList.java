@@ -274,8 +274,6 @@ public class GraphToolsList  extends GraphTools {
 
 		return end;
 	}
-	// A completer
-
 
 	public static void main(String[] args) {
 		int[][] Matrix = GraphTools.generateGraphData(10, 20, false, false, true, 100001);
@@ -283,7 +281,6 @@ public class GraphToolsList  extends GraphTools {
 		DirectedGraph al = new DirectedGraph(Matrix);
 		System.out.println(al);
 
-		// A completer
 		System.out.println("BFS Traversal");
 		breathFirstSearch(al, al.getNodes().get(0));
 
