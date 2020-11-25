@@ -1,46 +1,44 @@
 package AdjacencyList;
 
 import java.util.ArrayList;
-
 import GraphAlgorithms.GraphTools;
 import Nodes.DirectedNode;
 
 public class DirectedValuedGraph extends DirectedGraph {
 
-	//--------------------------------------------------
-    // 				Constructors
-    //--------------------------------------------------
+    // --------------------------------------------------
+    // Constructors
+    // --------------------------------------------------
 
-	public DirectedValuedGraph(int[][] matrixVal) {
-    	super();
-    	this.order = matrixVal.length;
+    public DirectedValuedGraph(int[][] matrixVal) {
+        super();
+        this.order = matrixVal.length;
         this.nodes = new ArrayList<DirectedNode>();
         for (int i = 0; i < this.order; i++) {
             this.nodes.add(i, this.makeNode(i));
         }
         for (DirectedNode n : this.getNodes()) {
             for (int j = 0; j < matrixVal[n.getLabel()].length; j++) {
-            	DirectedNode nn = this.getNodes().get(j);
+                DirectedNode nn = this.getNodes().get(j);
                 if (matrixVal[n.getLabel()][j] != 0) {
-                    n.getSuccs().put(nn,matrixVal[n.getLabel()][j]);
-                    nn.getPreds().put(n,matrixVal[n.getLabel()][j]);
+                    n.getSuccs().put(nn, matrixVal[n.getLabel()][j]);
+                    nn.getPreds().put(n, matrixVal[n.getLabel()][j]);
                     this.m++;
                 }
             }
-        }            	
+        }
     }
 
     // ------------------------------------------
-    // 				Accessors
+    // Accessors
     // ------------------------------------------
-    
 
     /**
-     * Adds the arc (from,to) with cost  if it is not already present in the graph
+     * Adds the arc (from,to) with cost if it is not already present in the graph
      */
     public void addArc(DirectedNode from, DirectedNode to, int cost) {
-    	if (this.isArc(from, to)) {
-    	    return;
+        if (this.isArc(from, to)) {
+            return;
         }
 
         DirectedNode source = this.getNodeOfList(from);

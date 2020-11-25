@@ -2,7 +2,6 @@ package GraphAlgorithms;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import Collection.Triple;
 import Nodes.UndirectedNode;
 
@@ -50,6 +49,8 @@ public class BinaryHeapEdge {
 	 * 
 	 */
     public Triple<UndirectedNode,UndirectedNode,Integer> remove() {
+		Triple<UndirectedNode, UndirectedNode, Integer> root = new Triple<UndirectedNode,UndirectedNode,Integer>(this.binh.get(0).getFirst(), this.binh.get(0).getSecond(), this.binh.get(0).getThird());
+
 		int lastIndex = binh.size() - 1;
 		int i = 0;
         this.swap(i, lastIndex);
@@ -63,9 +64,8 @@ public class BinaryHeapEdge {
         }
 		
 		this.binh.remove(lastIndex);
-        return this.binh.get(0);
-    }
-    
+        return root;
+	}
 
     /**
 	 * From an edge indexed by src, find the child having the least weight and return it
@@ -121,7 +121,6 @@ public class BinaryHeapEdge {
     	binh.get(child).setTriple(temp);
     }
 
-    
     /**
 	 * Create the string of the visualisation of a binary heap
 	 * 
@@ -220,7 +219,6 @@ public class BinaryHeapEdge {
 		
 		jarjarBin.remove();
 		jarjarBin.lovelyPrinting();
-
     }
 
 }
