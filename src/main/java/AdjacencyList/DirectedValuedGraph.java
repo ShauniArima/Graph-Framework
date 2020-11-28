@@ -47,22 +47,21 @@ public class DirectedValuedGraph extends DirectedGraph {
         source.addSucc(target, cost);
         target.addPred(source, cost);
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder s = new StringBuilder();
-        for(DirectedNode n : nodes){
+        for (DirectedNode n : nodes) {
             s.append("successors of ").append(n).append(" : ");
-            for(DirectedNode sn : n.getSuccs().keySet()){
-            	s.append("(").append(sn).append(",").append(n.getSuccs().get(sn)).append(")  ");
+            for (DirectedNode sn : n.getSuccs().keySet()) {
+                s.append("(").append(sn).append(",").append(n.getSuccs().get(sn)).append(")  ");
             }
             s.append("\n");
         }
         s.append("\n");
         return s.toString();
     }
-    
-    
+
     public static void main(String[] args) {
         int[][] matrix = GraphTools.generateGraphData(10, 20, false, false, false, 100001);
         int[][] matrixValued = GraphTools.generateValuedGraphData(10, false, false, true, false, 100001);
