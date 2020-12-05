@@ -102,7 +102,7 @@ public class GraphToolsList extends GraphTools {
 	}
 
 	/**
-	 * dethFirstSearch traverses the graph and displays what he is doing
+	 * depthFirstSearch traverses the graph and displays what he is doing
 	 * 
 	 * @param graph the graph that will be traversed
 	 * @param start the node from where to start
