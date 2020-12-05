@@ -1,17 +1,13 @@
 package GraphAlgorithms;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -281,17 +277,16 @@ public class GraphToolsList extends GraphTools {
 	}
 
 	/**
-	 * findShortestPathWithDijkstra use Dijkstra's algorithm to compute the
-	 * shortest paths from a starting node to all others
+	 * findShortestPathWithDijkstra use Dijkstra's algorithm to compute the shortest
+	 * paths from a starting node to all others
 	 * 
 	 * @param graph the graph used to find the paths
 	 * @param start the starting node
-	 * @return a pair containing the map of costs for each nodes of the graph and
-	 *         another map of predecessors
+	 * @return a pair containing the minimal costs to each nodes and the predecessor
+	 *         of each nodes
 	 * @throws Exception if the graph is not valued
 	 */
-	public static Pair<Map<AbstractNode, Integer>, Map<AbstractNode, AbstractNode>> findShortestPathWithDijkstra(
-			IGraph graph, AbstractNode start) throws Exception {
+	public static Pair<int[], int[]> findShortestPathWithDijkstra(IGraph graph, AbstractNode start) throws Exception {
 		if (graph.getClass() == DirectedGraph.class) {
 			throw new Exception("Could not apply this algorithm on non valued graph.");
 		}
@@ -299,46 +294,36 @@ public class GraphToolsList extends GraphTools {
 			throw new Exception("Could not apply this algorithm on non valued graph.");
 		}
 
-		PriorityQueue<Entry<AbstractNode, Integer>> queue = new PriorityQueue<>(Map.Entry.comparingByValue());
-		Map<AbstractNode, Integer> costs = new HashMap<>();
-		Map<AbstractNode, AbstractNode> predecessors = new HashMap<>();
+		int[] costs = new int[graph.getNbNodes()];
+		int[] predecessors = new int[graph.getNbNodes()];
+		Arrays.fill(costs, Integer.MAX_VALUE);
+		Arrays.fill(predecessors, Integer.MAX_VALUE);
 
-		costs.put(start, 0);
-		predecessors.put(start, start);
+		costs[start.getLabel()] = 0;
+		predecessors[start.getLabel()] = start.getLabel();
 
-		Consumer<AbstractNode> action = node -> {
-			if (node != start) {
-				costs.put(node, Integer.MAX_VALUE);
-				predecessors.put(node, null);
-			}
+		PriorityQueue<AbstractNode> queue = new PriorityQueue<>((a, b) -> {
+			return Integer.compare(costs[a.getLabel()], costs[b.getLabel()]);
+		});
 
-			queue.add(new AbstractMap.SimpleEntry<AbstractNode, Integer>(node, costs.get(node)));
-		};
-
-		if (graph.getClass() == DirectedValuedGraph.class) {
-			((DirectedValuedGraph) graph).getNodes().forEach(action);
-		}
-		if (graph.getClass() == UndirectedValuedGraph.class) {
-			((UndirectedValuedGraph) graph).getNodes().forEach(action);
-		}
+		queue.add(start);
 
 		while (!queue.isEmpty()) {
-			AbstractNode currentNode = queue.poll().getKey();
+			AbstractNode currentNode = queue.poll();
 
-			// Stop the algorithm early as it is not needed to compute unreachable nodes
-			if (costs.get(currentNode) == Integer.MAX_VALUE) {
+			if (costs[currentNode.getLabel()] == Integer.MAX_VALUE) {
 				break;
 			}
 
 			BiConsumer<AbstractNode, Integer> exploreSuccessor = (neighbour, cost) -> {
-				int totalCost = cost + costs.get(currentNode);
+				int totalCost = cost + costs[currentNode.getLabel()];
 
-				if (totalCost < costs.get(neighbour)) {
-					queue.remove(new AbstractMap.SimpleEntry<AbstractNode, Integer>(neighbour, costs.get(neighbour)));
+				if (totalCost < costs[neighbour.getLabel()]) {
+					queue.remove(neighbour);
 
-					costs.put(neighbour, totalCost);
-					predecessors.put(neighbour, currentNode);
-					queue.add(new AbstractMap.SimpleEntry<AbstractNode, Integer>(neighbour, costs.get(neighbour)));
+					costs[neighbour.getLabel()] = totalCost;
+					predecessors[neighbour.getLabel()] = currentNode.getLabel();
+					queue.add(neighbour);
 				}
 			};
 
@@ -351,19 +336,19 @@ public class GraphToolsList extends GraphTools {
 			}
 		}
 
-		return new Pair<Map<AbstractNode, Integer>, Map<AbstractNode, AbstractNode>>(costs, predecessors);
+		return new Pair<int[], int[]>(costs, predecessors);
 	}
 
 	/**
-	 * findShortestPathWithBellman use Bellman's algorithm to compute the
-	 * shortest paths from a starting node to all others
+	 * findShortestPathWithBellman use Bellman's algorithm to compute the shortest
+	 * paths from a starting node to all others
 	 * 
 	 * @param graph the graph used to find the paths
 	 * @param start the starting node
-	 * @return a pair containing the minimal values to each nodes and the 
-	 * predecessor of each nodes  
-	 * @throws Exception when the graph is not valued or if there is a 
-	 * negative-weight cycle in the graph
+	 * @return a pair containing the minimal values to each nodes and the
+	 *         predecessor of each nodes
+	 * @throws Exception when the graph is not valued or if there is a
+	 *                   negative-weight cycle in the graph
 	 */
 	public static Pair<int[], int[]> findShortestPathWithBellman(IGraph graph, AbstractNode start) throws Exception {
 		if (graph.getClass() == DirectedGraph.class) {
@@ -390,7 +375,7 @@ public class GraphToolsList extends GraphTools {
 
 		LinkedList<AbstractNode> queue = new LinkedList<>();
 		queue.add(start);
-		
+
 		LinkedList<AbstractNode> updatedNodes = new LinkedList<>();
 
 		for (int i = 0; i < numberOfIteration; i++) {
@@ -418,7 +403,7 @@ public class GraphToolsList extends GraphTools {
 
 			queue = new LinkedList<>(updatedNodes);
 			updatedNodes.clear();
-		};
+		}
 
 		while (!queue.isEmpty()) {
 			AbstractNode currentNode = queue.poll();
@@ -444,7 +429,7 @@ public class GraphToolsList extends GraphTools {
 			throw new Exception("Graph contains a negative-weight cycle");
 		}
 
-		return new Pair<int[],int[]>(values, predecessors);
+		return new Pair<int[], int[]>(values, predecessors);
 	}
 
 	public static void main(String[] args) {
@@ -489,20 +474,23 @@ public class GraphToolsList extends GraphTools {
 		int[][] matrixValued = GraphTools.generateValuedGraphData(10, false, false, true, false, 100001);
 		DirectedValuedGraph directedValuedGraph = new DirectedValuedGraph(matrixValued);
 		UndirectedValuedGraph undirectedValuedGraph = new UndirectedValuedGraph(matrixValued);
-		
+
 		System.out.println(undirectedValuedGraph);
-		
+
 		try {
 			findShortestPathWithDijkstra(directedValuedGraph, directedValuedGraph.getNodes().get(0));
 			findShortestPathWithDijkstra(undirectedValuedGraph, undirectedValuedGraph.getNodes().get(0));
-			
+
 			findShortestPathWithBellman(directedValuedGraph, directedValuedGraph.getNodes().get(0));
 			findShortestPathWithBellman(undirectedValuedGraph, undirectedValuedGraph.getNodes().get(0));
 
 			// Add negative edges
-			undirectedValuedGraph.addEdge(undirectedValuedGraph.getNodes().get(0), undirectedValuedGraph.getNodes().get(1), -10);
-			undirectedValuedGraph.addEdge(undirectedValuedGraph.getNodes().get(0), undirectedValuedGraph.getNodes().get(2), -10);
-			undirectedValuedGraph.addEdge(undirectedValuedGraph.getNodes().get(1), undirectedValuedGraph.getNodes().get(2), -10);
+			undirectedValuedGraph.addEdge(undirectedValuedGraph.getNodes().get(0),
+					undirectedValuedGraph.getNodes().get(1), -10);
+			undirectedValuedGraph.addEdge(undirectedValuedGraph.getNodes().get(0),
+					undirectedValuedGraph.getNodes().get(2), -10);
+			undirectedValuedGraph.addEdge(undirectedValuedGraph.getNodes().get(1),
+					undirectedValuedGraph.getNodes().get(2), -10);
 
 			findShortestPathWithBellman(undirectedValuedGraph, undirectedValuedGraph.getNodes().get(0));
 		} catch (Exception e) {
